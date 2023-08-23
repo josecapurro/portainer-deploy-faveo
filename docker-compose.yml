@@ -1,0 +1,54 @@
+version: '3'
+services:
+  faveo-web:
+    build:
+      context: faveo-web
+      dockerfile: faveo-web.Dockerfile
+    image: faveo-web
+    container_name: faveo-web
+    ports:
+      - "10003:80"
+    volumes:
+      - 'faveo-web_log:/var/log/apache2'
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+    networks:
+      faveo-network:
+        ipv4_address: 172.30.1.10
+  faveo-db:
+    build:
+      context: faveo-db
+      dockerfile: faveo-db.Dockerfile
+    image: faveo-db
+    container_name: faveo-db
+    environment:
+      - MYSQL_ROOT_HOST="%"
+      - MYSQL_ROOT_PASSWORD="root"
+      - MYSQL_USER="laravel"
+      - MYSQL_PASSWORD="FhgVoFuOrWspc3TgBIA2K4dZGuJTPwSYBoLnNckcaxy"
+      - MYSQL_DATABASE="laravel"
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+    networks:
+      faveo-network:
+        ipv4_address: 172.30.1.11
+    ports:
+      - 3906:3306
+    volumes:
+      - 'faveo-db:/var/lib/mysql'
+volumes:
+  faveo-db:
+    driver: local
+  faveo-web_log:
+    driver: local
+
+networks:
+  faveo-network:
+    name: faveo-network
+    attachable: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.0.0/16
+          ip_range: 172.30.1.0/24
+          gateway: 172.30.1.254
