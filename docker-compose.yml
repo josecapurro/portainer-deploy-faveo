@@ -10,6 +10,7 @@ services:
       - "10003:80"
     volumes:
       - 'faveo-web_log:/var/log/apache2'
+      - 'faveo-web_storage:/var/www/html/storage'
     environment:
       - APP_ENV=local
       - APP_DEBUG=true
@@ -40,6 +41,8 @@ volumes:
   faveo-db:
     driver: local
   faveo-web_log:
+    driver: local
+  faveo-web_storage:
     driver: local
 
 networks:
